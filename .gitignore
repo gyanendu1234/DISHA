@@ -15,3 +15,8 @@ node_modules
 dist/
 android/
 ios/
+
+# Signing keys
+*.jks
+*.pem
+upload_certificate.pem
