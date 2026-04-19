@@ -10,7 +10,7 @@
     "splash": {
       "image": "./assets/images/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#E85D04"
+      "backgroundColor": "#C41C1C"
     },
     "ios": {
       "supportsTablet": false,
@@ -19,7 +19,7 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#E85D04"
+        "backgroundColor": "#C41C1C"
       },
       "package": "com.disha.app",
       "versionCode": 1,
@@ -39,13 +39,20 @@
         "expo-notifications",
         {
           "icon": "./assets/images/notification-icon.png",
-          "color": "#E85D04"
+          "color": "#C41C1C"
         }
       ],
       "expo-secure-store"
     ],
     "experiments": {
       "typedRoutes": true
-    }
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "4a161e8a-3cbf-45a1-bfbb-d538f100192a"
+      }
+    },
+    "owner": "gyanendu1197"
   }
 }
