@@ -14,14 +14,14 @@
     },
     "ios": {
       "supportsTablet": false,
-      "bundleIdentifier": "com.disha.app"
+      "bundleIdentifier": "com.disha.odia.app"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#C41C1C"
       },
-      "package": "com.disha.app",
+      "package": "com.disha.odia.app",
       "versionCode": 1,
       "minSdkVersion": 23,
       "targetSdkVersion": 34,
