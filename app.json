@@ -1,0 +1,51 @@
+{
+  "expo": {
+    "name": "Disha",
+    "slug": "disha",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "scheme": "disha",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/images/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#E85D04"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.disha.app"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "backgroundColor": "#E85D04"
+      },
+      "package": "com.disha.app",
+      "versionCode": 1,
+      "minSdkVersion": 23,
+      "targetSdkVersion": 34,
+      "softwareKeyboardLayoutMode": "pan",
+      "permissions": [
+        "NOTIFICATIONS",
+        "RECEIVE_BOOT_COMPLETED",
+        "VIBRATE"
+      ]
+    },
+    "plugins": [
+      "expo-router",
+      "expo-font",
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/images/notification-icon.png",
+          "color": "#E85D04"
+        }
+      ],
+      "expo-secure-store"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}

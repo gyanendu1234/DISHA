@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="or">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#E85D04">
+<title>ଓଡ଼ିଶା ସହାୟକ | Odisha Sahayaka</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+--primary:#E85D04;--primary-dark:#C13A00;--secondary:#1B4332;
+--accent:#FFD166;--bg:#FFF8F0;--surface:#FFF;
+--text:#1A1A2E;--text2:#6B7280;--weather-blue:#0077B6;
+--holiday-red:#DC2626;--green:#16A34A;
+--radius:14px;--shadow:0 2px 8px rgba(0,0,0,.08)
+}
+html{font-size:16px}
+body{
+font-family:'Noto Sans Odia','Noto Sans',Arial,sans-serif;
+background:var(--bg);color:var(--text);
+max-width:430px;margin:0 auto;min-height:100vh;
+position:relative;overflow-x:hidden;
+-webkit-font-smoothing:antialiased
+}
+/* --- Screens --- */
+.screen{display:none;padding:0 16px 90px 16px;animation:fadeIn .25s ease}
+.screen.active{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* --- Top Bar --- */
+.topbar{
+display:flex;align-items:center;justify-content:space-between;
+padding:14px 16px 10px;position:sticky;top:0;background:var(--bg);z-index:10
+}
+.topbar-title{font-size:1.15rem;font-weight:700;color:var(--primary)}
+.topbar-icons{display:flex;gap:16px}
+.topbar-icons span,.topbar-back{font-size:1.4rem;cursor:pointer;line-height:1}
+.topbar-back{margin-right:8px}
+
+/* --- Hero Card --- */
+.hero{
+background:linear-gradient(135deg,var(--primary),#F77F00);
+color:#fff;border-radius:var(--radius);padding:20px;margin:8px 0 16px;
+box-shadow:0 4px 16px rgba(232,93,4,.25)
+}
+.hero .greeting{font-size:1.3rem;font-weight:700;margin-bottom:2px}
+.hero .date-odia{font-size:1.05rem;margin:4px 0 1px}
+.hero .date-en{font-size:.82rem;opacity:.85}
+.hero .odia-cal{
+margin-top:12px;padding-top:10px;border-top:1px solid rgba(255,255,255,.3)
+}
+.hero .odia-cal-label{font-size:.8rem;opacity:.8}
+.hero .odia-cal-date{font-size:1.1rem;font-weight:600;margin-top:2px}
+.hero .sun-row{display:flex;gap:20px;margin-top:10px;font-size:.85rem;opacity:.9}
+
+/* --- Section --- */
+.section{margin-bottom:18px}
+.section-title{
+font-size:.95rem;font-weight:700;color:var(--text2);
+margin-bottom:10px;display:flex;align-items:center;gap:6px;
+border-bottom:2px solid #eee;padding-bottom:6px
+}
+.section-title .icon{font-size:1.1rem}
+
+/* --- Cards --- */
+.card{
+background:var(--surface);border-radius:var(--radius);
+padding:16px;margin-bottom:12px;box-shadow:var(--shadow);
+border:1px solid #f0ebe4
+}
+.card-row{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px}
+.card-row:last-child{margin-bottom:0}
+.card-icon{font-size:1.3rem;flex-shrink:0;margin-top:2px}
+.card-content{flex:1}
+.card-content .or{font-size:.95rem;font-weight:600;line-height:1.4}
+.card-content .en{font-size:.78rem;color:var(--text2);margin-top:1px}
+.card-content .date-sm{font-size:.8rem;color:var(--primary);margin-top:2px;font-weight:600}
+.view-all{
+display:block;text-align:right;font-size:.82rem;
+color:var(--primary);font-weight:600;margin-top:8px;cursor:pointer;
+text-decoration:none
+}
+
+/* --- Weather Card --- */
+.weather-card{
+background:linear-gradient(135deg,#0077B6,#00A8E8);
+color:#fff;border-radius:var(--radius);padding:16px;
+margin-bottom:12px;box-shadow:0 4px 12px rgba(0,119,182,.2)
+}
+.weather-main{display:flex;align-items:center;gap:12px}
+.weather-icon{font-size:2.8rem}
+.weather-temp{font-size:2.2rem;font-weight:700}
+.weather-desc .or{font-size:.95rem;font-weight:600;margin-top:4px}
+.weather-desc .en{font-size:.78rem;opacity:.85;margin-top:1px}
+.weather-stats{display:flex;gap:0;margin-top:12px;border-top:1px solid rgba(255,255,255,.25);padding-top:10px}
+.weather-stat{flex:1;text-align:center;font-size:.75rem;line-height:1.4}
+.weather-stat .val{font-size:.95rem;font-weight:700}
+.weather-stat .label{opacity:.8}
+
+/* --- Holiday Mini --- */
+.holiday-mini{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #f0ebe4}
+.holiday-mini:last-child{border-bottom:none}
+.holiday-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.holiday-dot.bank{background:var(--weather-blue)}
+.holiday-dot.govt{background:var(--holiday-red)}
+.holiday-info{flex:1}
+.holiday-info .or{font-size:.9rem;font-weight:600}
+.holiday-info .en{font-size:.75rem;color:var(--text2)}
+.holiday-date{font-size:.78rem;color:var(--primary);font-weight:600;white-space:nowrap}
+
+/* --- Bottom Nav --- */
+.bottom-nav{
+position:fixed;bottom:0;left:50%;transform:translateX(-50%);
+width:100%;max-width:430px;
+background:var(--surface);
+display:flex;border-top:1px solid #e5e0d8;
+padding:6px 0 env(safe-area-inset-bottom,8px);
+z-index:100;box-shadow:0 -2px 12px rgba(0,0,0,.06)
+}
+.nav-item{
+flex:1;display:flex;flex-direction:column;align-items:center;
+padding:6px 0;cursor:pointer;-webkit-tap-highlight-color:transparent;
+transition:color .15s;min-height:52px;justify-content:center
+}
+.nav-item .icon{font-size:1.45rem;line-height:1}
+.nav-item .label-or{font-size:.7rem;margin-top:3px;font-weight:600}
+.nav-item .label-en{font-size:.58rem;color:var(--text2)}
+.nav-item.active .icon,.nav-item.active .label-or{color:var(--primary)}
+
+/* --- Calendar Screen --- */
+.month-switcher{
+display:flex;align-items:center;justify-content:space-between;
+padding:10px 0;margin-bottom:12px
+}
+.month-switcher .month-name{font-size:1rem;font-weight:700;text-align:center}
+.month-switcher .month-en{font-size:.75rem;color:var(--text2)}
+.month-switcher .arrow{
+font-size:1.5rem;padding:8px 14px;cursor:pointer;
+color:var(--primary);font-weight:700;user-select:none;
+-webkit-tap-highlight-color:transparent
+}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:16px}
+.cal-header{
+text-align:center;padding:8px 2px;font-size:.72rem;font-weight:700;
+color:var(--text2)
+}
+.cal-header .or{display:block}
+.cal-cell{
+text-align:center;padding:10px 2px;font-size:.9rem;
+border-radius:10px;cursor:pointer;min-height:44px;
+display:flex;align-items:center;justify-content:center;
+position:relative;-webkit-tap-highlight-color:transparent
+}
+.cal-cell.today{background:var(--primary);color:#fff;font-weight:700}
+.cal-cell.festival{color:var(--primary);font-weight:700}
+.cal-cell.festival::after{
+content:'';position:absolute;bottom:4px;left:50%;transform:translateX(-50%);
+width:5px;height:5px;border-radius:50%;background:var(--accent)
+}
+.cal-cell.holiday{color:var(--holiday-red);font-weight:700}
+.cal-cell.holiday::after{
+content:'';position:absolute;bottom:4px;left:50%;transform:translateX(-50%);
+width:5px;height:5px;border-radius:50%;background:var(--holiday-red)
+}
+.cal-cell.empty{cursor:default}
+.cal-cell.sunday{color:var(--holiday-red)}
+
+/* festival list */
+.fest-list-item{
+display:flex;align-items:center;gap:10px;padding:10px 0;
+border-bottom:1px solid #f0ebe4
+}
+.fest-list-item:last-child{border-bottom:none}
+.fest-dot{
+width:28px;height:28px;border-radius:50%;display:flex;
+align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0
+}
+.fest-dot.puja{background:#FFF3D6}
+.fest-dot.holiday{background:#FEE2E2}
+.fest-info .or{font-size:.9rem;font-weight:600}
+.fest-info .en{font-size:.75rem;color:var(--text2)}
+.fest-date-badge{
+font-size:.72rem;background:#FFF3D6;color:var(--primary-dark);
+padding:3px 8px;border-radius:8px;font-weight:600;white-space:nowrap
+}
+
+/* --- Weather Screen --- */
+.weather-hero{
+background:linear-gradient(135deg,#0077B6,#0096C7,#00B4D8);
+color:#fff;border-radius:var(--radius);padding:24px 16px;text-align:center;
+margin:8px 0 16px;box-shadow:0 4px 16px rgba(0,119,182,.25)
+}
+.weather-hero .loc{font-size:.82rem;opacity:.85;margin-bottom:8px}
+.weather-hero .loc span{text-decoration:underline;cursor:pointer}
+.weather-hero .big-icon{font-size:4rem;margin:8px 0}
+.weather-hero .big-temp{font-size:3rem;font-weight:700}
+.weather-hero .feels{font-size:.82rem;opacity:.85;margin-top:2px}
+.weather-hero .conv{
+font-size:1.05rem;font-weight:600;margin-top:12px;
+padding:10px;background:rgba(255,255,255,.15);border-radius:10px;
+line-height:1.5
+}
+.weather-detail-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:16px}
+.weather-detail-box{
+background:var(--surface);border-radius:12px;padding:12px 6px;
+text-align:center;box-shadow:var(--shadow);border:1px solid #f0ebe4
+}
+.weather-detail-box .icon{font-size:1.3rem}
+.weather-detail-box .val{font-size:.9rem;font-weight:700;margin:4px 0 2px}
+.weather-detail-box .label-or{font-size:.68rem;color:var(--text2)}
+.weather-detail-box .label-en{font-size:.6rem;color:var(--text2)}
+
+.hourly-row{
+display:flex;align-items:center;gap:10px;padding:10px 0;
+border-bottom:1px solid #f0ebe4
+}
+.hourly-row:last-child{border-bottom:none}
+.hourly-time{width:60px;font-size:.85rem;font-weight:600}
+.hourly-icon{font-size:1.2rem}
+.hourly-temp{font-size:.95rem;font-weight:700;width:45px}
+.hourly-desc{font-size:.82rem;color:var(--text2);flex:1}
+
+.forecast-row{
+display:flex;align-items:center;gap:8px;padding:10px 0;
+border-bottom:1px solid #f0ebe4
+}
+.forecast-row:last-child{border-bottom:none}
+.forecast-day{width:30px;font-size:.85rem;font-weight:700}
+.forecast-icon{font-size:1.1rem;width:28px;text-align:center}
+.forecast-temps{font-size:.85rem;flex:1}
+.forecast-temps .hi{font-weight:700}
+.forecast-temps .lo{color:var(--text2)}
+.forecast-desc-or{font-size:.82rem;color:var(--text2);text-align:right}
+
+.agri-card{
+background:linear-gradient(135deg,#1B4332,#2D6A4F);
+color:#fff;border-radius:var(--radius);padding:16px;margin-bottom:12px
+}
+.agri-card .title{font-size:.95rem;font-weight:700;margin-bottom:10px}
+.agri-tip{display:flex;gap:8px;margin-bottom:10px;font-size:.88rem;line-height:1.5}
+.agri-tip:last-child{margin-bottom:0}
+.agri-tip .icon{font-size:1.1rem;flex-shrink:0;margin-top:2px}
+
+/* --- Holiday Screen --- */
+.tab-bar{display:flex;margin:8px 0 16px;border-radius:10px;overflow:hidden;border:2px solid var(--primary)}
+.tab-btn{
+flex:1;padding:10px;text-align:center;font-size:.88rem;font-weight:600;
+cursor:pointer;transition:all .15s;-webkit-tap-highlight-color:transparent
+}
+.tab-btn.active{background:var(--primary);color:#fff}
+.tab-btn:not(.active){background:var(--surface);color:var(--primary)}
+.filter-row{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.filter-chip{
+padding:6px 14px;border-radius:20px;font-size:.78rem;font-weight:600;
+cursor:pointer;border:1.5px solid #ddd;background:var(--surface);
+-webkit-tap-highlight-color:transparent
+}
+.filter-chip.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+.month-group-title{
+font-size:.88rem;font-weight:700;color:var(--secondary);
+padding:8px 0 6px;margin-top:8px
+}
+.hol-item{
+background:var(--surface);border-radius:12px;padding:14px;
+margin-bottom:10px;box-shadow:var(--shadow);border:1px solid #f0ebe4;
+display:flex;gap:12px;align-items:flex-start
+}
+.hol-marker{
+width:6px;border-radius:3px;align-self:stretch;flex-shrink:0;min-height:40px
+}
+.hol-marker.bank{background:var(--weather-blue)}
+.hol-marker.govt{background:var(--holiday-red)}
+.hol-marker.both{background:linear-gradient(var(--holiday-red),var(--weather-blue))}
+.hol-body{flex:1}
+.hol-body .date-line{font-size:.78rem;color:var(--primary);font-weight:600;margin-bottom:3px}
+.hol-body .or{font-size:.95rem;font-weight:600}
+.hol-body .en{font-size:.78rem;color:var(--text2);margin-top:1px}
+.hol-badges{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap}
+.hol-badge{
+font-size:.65rem;padding:2px 8px;border-radius:8px;font-weight:600
+}
+.hol-badge.bank{background:#DBEAFE;color:#1D4ED8}
+.hol-badge.govt{background:#FEE2E2;color:#B91C1C}
+.hol-badge.state{background:#FEF3C7;color:#92400E}
+
+/* --- Festival Detail Screen --- */
+.detail-hero{
+background:linear-gradient(135deg,var(--primary),#F77F00);
+border-radius:0 0 24px 24px;padding:20px 16px 24px;color:#fff;
+margin:-0px -16px 16px;text-align:center
+}
+.detail-hero .art{font-size:5rem;margin:8px 0}
+.detail-hero .name-or{font-size:1.4rem;font-weight:700}
+.detail-hero .name-en{font-size:.9rem;opacity:.85;margin-top:2px}
+.detail-hero .date-line{font-size:.88rem;margin-top:8px;opacity:.9}
+.detail-hero .tithi{font-size:.82rem;opacity:.8;margin-top:2px}
+.detail-section{margin-bottom:16px}
+.detail-section .title{
+font-size:.92rem;font-weight:700;color:var(--secondary);
+margin-bottom:8px;display:flex;align-items:center;gap:6px
+}
+.detail-text{
+font-size:.9rem;line-height:1.65;margin-bottom:6px
+}
+.detail-text.en{font-size:.8rem;color:var(--text2);line-height:1.55}
+.tradition-list{list-style:none;padding:0}
+.tradition-list li{
+padding:8px 0;border-bottom:1px solid #f0ebe4;font-size:.88rem;
+display:flex;gap:8px;align-items:center
+}
+.tradition-list li:last-child{border-bottom:none}
+.glance-grid{display:flex;gap:8px;flex-wrap:wrap}
+.glance-box{
+flex:1;min-width:90px;background:var(--surface);border-radius:12px;
+padding:12px;text-align:center;box-shadow:var(--shadow);border:1px solid #f0ebe4
+}
+.glance-box .icon{font-size:1.2rem}
+.glance-box .label{font-size:.7rem;color:var(--text2);margin-top:4px}
+.glance-box .val{font-size:.82rem;font-weight:700;margin-top:2px}
+.reminder-btn{
+display:block;width:100%;padding:14px;margin:20px 0;
+background:var(--primary);color:#fff;border:none;border-radius:12px;
+font-size:1rem;font-weight:700;cursor:pointer;text-align:center;
+font-family:inherit;box-shadow:0 4px 12px rgba(232,93,4,.3);
+-webkit-tap-highlight-color:transparent
+}
+.reminder-btn:active{background:var(--primary-dark)}
+
+/* --- Utility --- */
+.countdown{
+display:inline-block;background:rgba(255,255,255,.2);
+padding:2px 10px;border-radius:10px;font-size:.75rem;font-weight:600
+}
+.badge-upcoming{
+display:inline-block;background:var(--accent);color:#7C2D12;
+padding:2px 8px;border-radius:8px;font-size:.68rem;font-weight:700
+}
+.divider{height:1px;background:#eee;margin:12px 0}
+</style>
+</head>
+<body>
+
+<!-- ==================== TOP BAR ==================== -->
+<div class="topbar">
+  <div style="display:flex;align-items:center">
+    <span class="topbar-back" id="backBtn" style="display:none" onclick="goBack()">&#8592;</span>
+    <span class="topbar-title">&#x0B13;&#x0B21;&#x0B3C;&#x0B3F;&#x0B36;&#x0B3E; &#x0B38;&#x0B39;&#x0B3E;&#x0B5F;&#x0B15;</span>
+  </div>
+  <div class="topbar-icons">
+    <span>&#x1F514;</span>
+    <span>&#9881;&#65039;</span>
+  </div>
+</div>
+
+<!-- ==================== SCREEN 1: HOME ==================== -->
+<div class="screen active" id="screen-home">
+
+  <!-- Hero Date Card -->
+  <div class="hero">
+    <div class="greeting">&#x1F31E; &#x0B38;&#x0B41;&#x0B2A;&#x0B4D;&#x0B30;&#x0B2D;&#x0B3E;&#x0B24;!</div>
+    <div class="date-odia">&#x0B36;&#x0B41;&#x0B15;&#x0B4D;&#x0B30;&#x0B2C;&#x0B3E;&#x0B30;, &#x0B6A; &#x0B0F;&#x0B2A;&#x0B4D;&#x0B30;&#x0B3F;&#x0B32; &#x0B68;&#x0B66;&#x0B68;&#x0B6C;</div>
+    <div class="date-en">Friday, 4 April 2026</div>
+    <div class="odia-cal">
+      <div class="odia-cal-label">&#x0B13;&#x0B21;&#x0B3C;&#x0B3F;&#x0B06; &#x0B24;&#x0B3E;&#x0B30;&#x0B3F;&#x0B16;:</div>
+      <div class="odia-cal-date">&#x0B68;&#x0B67; &#x0B1A;&#x0B48;&#x0B24;&#x0B4D;&#x0B30; &#x0B67;&#x0B6F;&#x0B6A;&#x0B6C; (&#x0B36;&#x0B15;&#x0B3E;&#x0B2C;&#x0B4D;&#x0B26;)</div>
+      <div class="sun-row">
+        <span>&#x1F305; &#x0B38;&#x0B42;&#x0B30;&#x0B4D;&#x0B5F;&#x0B4D;&#x0B5F;&#x0B4B;&#x0B26;&#x0B5F; 5:42</span>
+        <span>&#x1F307; &#x0B38;&#x0B42;&#x0B30;&#x0B4D;&#x0B5F;&#x0B4D;&#x0B5F;&#x0B3E;&#x0B38;&#x0B4D;&#x0B24; 6:18</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Today's Special -->
+  <div class="section">
+    <div class="section-title"><span class="icon">&#x1FA94;</span> &#x0B06;&#x0B1C;&#x0B3F;&#x0B30; &#x0B2C;&#x0B3F;&#x0B36;&#x0B47;&#x0B37; &middot; Today's Special</div>
+    <div class="card">
+      <div class="card-row">
+        <div class="card-icon">&#x1F319;</div>
+        <div class="card-content">
+          <div class="or">&#x0B1A;&#x0B48;&#x0B24;&#x0B4D;&#x0B30; &#x0B2E;&#x0B3E;&#x0B38; &#x0B1A;&#x0B3E;&#x0B32;&#x0B3F;&#x0B1B;&#x0B3F;</div>
+          <div class="en">Chaitra month is ongoing</div>
+        </div>
+      </div>
+      <div class="card-row" onclick="showScreen('screen-detail')" style="cursor:pointer">
+        <div class="card-icon">&#x23ED;&#xFE0F;</div>
+        <div class="card-content">
+          <div class="or">&#x0B30;&#x0B3E;&#x0B2E; &#x0B28;&#x0B2C;&#x0B2E;&#x0B40; <span class="badge-upcoming">&#x0B06;&#x0B1C;&#x0B3F; &#x0B6A; &#x0B26;&#x0B3F;&#x0B28;</span></div>
+          <div class="en">Ram Navami</div>
+          <div class="date-sm">&#x0B6B; &#x0B0F;&#x0B2A;&#x0B4D;&#x0B30;&#x0B3F;&#x0B32; &#x0B68;&#x0B66;&#x0B68;&#x0B6C;</div>
+        </div>
+      </div>
+      <div class="card-row" onclick="showScreen('screen-detail')" style="cursor:pointer">
+        <div class="card-icon">&#x23ED;&#xFE0F;</div>
+        <div class="card-content">
+          <div class="or">&#x0B2A;&#x0B23;&#x0B3E; &#x0B38;&#x0B19;&#x0B4D;&#x0B15;&#x0B4D;&#x0B30;&#x0B3E;&#x0B28;&#x0B4D;&#x0B24;&#x0B3F; <span class="countdown">&#x0B06;&#x0B09; &#x0B67;&#x0B66; &#x0B26;&#x0B3F;&#x0B28;</span></div>
+          <div class="en">Pana Sankranti / Odia New Year</div>
+          <div class="date-sm">&#x0B67;&#x0B6A; &#x0B0F;&#x0B2A;&#x0B4D;&#x0B30;&#x0B3F;&#x0B32; &#x0B68;&#x0B66;&#x0B68;&#x0B6C;</div>
+        </div>
+      </div>
+      <div class="card-row">
+        <div class="card-icon">&#x23ED;&#xFE0F;</div>
+        <div class="card-content">
+          <div class="or">&#x0B30;&#x0B25; &#x0B5F;&#x0B3E;&#x0B24;&#x0B4D;&#x0B30;&#x0B3E;</div>
+          <div class="en">Rath Yatra</div>
+          <div class="date-sm">&#x0B68;&#x0B66; &#x0B1C;&#x0B41;&#x0B28; &#x0B68;&#x0B66;&#x0B68;&#x0B6C;</div>
+        </div>
+      </div>
+      <a class="view-all" onclick="showScreen('screen-calendar')">&#x0B38;&#x0B2C;&#x0B41; &#x0B26;&#x0B47;&#x0B16;&#x0B28;&#x0B4D;&#x0B24;&#x0B41; &#x27A1;</a>
+    </div>
+  </div>
+
+  <!-- Weather Summary -->
+  <div class="section">
+    <div class="section-title"><span class="icon">&#x1F324;&#xFE0F;</span> &#x0B06;&#x0B1C;&#x0B3F;&#x0B30; &#x0B2A;&#x0B3E;&#x0B23;&#x0B3F;&#x0B2A;&#x0B3E;&#x0B17; &middot; Today's Weather</div>
+    <div class="weather-card" onclick="showScreen('screen-weather')" style="cursor:pointer">
+      <div class="weather-main">
+        <div class="weather-icon">&#9728;&#65039;</div>
+        <div>
+          <div class="weather-temp">&#x0B69;&#x0B68;&#xB0;C</div>
+          <div class="weather-desc">
+            <div class="or">&#x0B17;&#x0B30;&#x0B2E; &#x0B32;&#x0B3E;&#x0B17;&#x0B41;&#x0B1B;&#x0B3F;!</div>
+            <div class="en">It's hot!</div>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:8px;font-size:.88rem;opacity:.9">
+        &#x0B38;&#x0B28;&#x0B4D;&#x0B27;&#x0B4D;&#x0B5F;&#x0B3E;&#x0B30;&#x0B47; &#x0B1F;&#x0B3F;&#x0B15;&#x0B47; &#x0B25;&#x0B23;&#x0B4D;&#x0B21;&#x0B3E; &#x0B2A;&#x0B21;&#x0B3C;&#x0B3F;&#x0B2C; &middot; <span style="font-size:.78rem">Evening will be cooler</span>
+      </div>
+      <div class="weather-stats">
+        <div class="weather-stat"><div class="val">&#x1F4A8; 12</div><div class="label">km/h &#x0B2A;&#x0B2C;&#x0B28;</div></div>
+        <div class="weather-stat"><div class="val">&#x1F4A7; 45%</div><div class="label">&#x0B06;&#x0B30;&#x0B4D;&#x0B26;&#x0B4D;&#x0B30;&#x0B24;&#x0B3E;</div></div>
+        <div class="weather-stat"><div class="val">&#x1F327;&#xFE0F; 10%</div><div class="label">&#x0B2C;&#x0B30;&#x0B4D;&#x0B37;&#x0B3E;</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Holiday Summary -->
+  <div class="section">
+    <div class="section-title"><span class="icon">&#x1F3DB;&#xFE0F;</span> &#x0B1B;&#x0B41;&#x0B1F;&#x0B3F; &#x0B38;&#x0B42;&#x0B1A;&#x0B28;&#x0B3E; &middot; Holiday Info</div>
+    <div class="card">
+      <div class="holiday-mini">
+        <div class="holiday-dot both"></div>
+        <div class="holiday-info">
+          <div class="or">&#x0B21;&#x0B3C;&#x0B03; &#x0B06;&#x0B2E;&#x0B4D;&#x0B2C;&#x0B47;&#x0B26;&#x0B15;&#x0B30; &#x0B1C;&#x0B5F;&#x0B28;&#x0B4D;&#x0B24;&#x0B40;</div>
+          <div class="en">Dr. Ambedkar Jayanti</div>
+        </div>
+        <div class="holiday-date">&#x0B67;&#x0B6A; &#x0B0F;&#x0B2A;&#x0B4D;&#x0B30;&#x0B3F;&#x0B32;</div>
+      </div>
+      <div class="holiday-mini">
+        <div class="holiday-dot govt"></div>
+        <div class="holiday-info">
+          <div class="or">&#x0B2A;&#x0B23;&#x0B3E; &#x0B38;&#x0B19;&#x0B4D;&#x0B15;&#x0B4D;&#x0B30;&#x0B3E;&#x0B28;&#x0B4D;&#x0B24;&#x0B3F;</div>
+          <div class="en">Pana Sankranti</div>
+        </div>
+        <div class="holiday-date">&#x0B67;&#x0B6A; &#x0B0F;&#x0B2A;&#x0B4D;&#x0B30;&#x0B3F;&#x0B32;</div>
+      </div>
+      <div class="holiday-mini">
+        <div class="holiday-dot bank"></div>
+        <div class="holiday-info">
+          <div class="or">&#x0B17;&#x0B41;&#x0B21;&#x0B4D; &#x0B2B;&#x0B4D;&#x0B30;&#x0B3E;&#x0B07;&#x0B21;&#x0B3C;&#x0B47;</div>
+          <div class="en">Good Friday</div>
+        </div>
+        <div class="holiday-date">&#x0B67;&#x0B6E; &#x0B0F;&#x0B2A;&#x0B4D;&#x0B30;&#x0B3F;&#x0B32;</div>
+      </div>
+      <a class="view-all" onclick="showScreen('screen-holidays')">&#x0B38;&#x0B2C;&#x0B41; &#x0B26;&#x0B47;&#x0B16;&#x0B28;&#x0B4D;&#x0B24;&#x0B41; &#x27A1;</a>
+    </div>
+  </div>
+
+</div>
+
+<!-- ==================== SCREEN 2: CALENDAR ==================== -->
+<div class="screen" id="screen-calendar">
+
+  <!-- Month Switcher -->
+  <div class="month-switcher">
+    <span class="arrow">&#9664;</span>
+    <div style="text-align:center">
+      <div class="month-name">&#x0B1A;&#x0B48;&#x0B24;&#x0B4D;&#x0B30; &#x0B67;&#x0B6F;&#x0B6A;&#x0B6C;</div>
+      <div class="month-en">April 2026</div>
+    </div>
+    <span class="arrow">&#9654;</span>
+  </div>
+
+  <!-- Calendar Grid -->
+  <div class="cal-grid">
+    <div class="cal-header"><span class="or">&#x0B30;</span>Sun</div>
+    <div class="cal-header"><span class="or">&#x0B38;&#x0B4B;</span>Mon</div>
+    <div class="cal-header"><span class="or">&#x0B2E;</span>Tue</div>
+    <div class="cal-header"><span class="or">&#x0B2C;&#x0B41;</span>Wed</div>
+    <div class="cal-header"><span class="or">&#x0B17;&#x0B41;</span>Thu</div>
+    <div class="cal-header"><span class="or">&#x0B36;&#x0B41;</span>Fri</div>
+    <div class="cal-header"><span class="or">&#x0B36;</span>Sat</div>
+    <!-- Row 1 -->
+    <div class="cal-cell empty"></div>
+    <div class="cal-cell empty"></div>
+    <div class="cal-cell empty"></div>
+    <div class="cal-cell">1</div>
+    <div class="cal-cell">2</div>
+    <div class="cal-cell">3</div>
+    <div class="cal-cell today">4</div>
+    <!-- Row 2 -->
+    <div class="cal-cell sunday festival" onclick="showScreen('screen-detail')">5</div>
+    <div class="cal-cell">6</div>
+    <div class="cal-cell">7</div>
+    <div class="cal-cell">8</div>
+    <div class="cal-cell">9</div>
+    <div class="cal-cell">10</div>
+    <div class="cal-cell">11</div>
+    <!-- Row 3 -->
+    <div class="cal-cell sunday">12</div>
+    <div class="cal-cell">13</div>
+    <div class="cal-cell holiday" onclick="showScreen('screen-detail')">14</div>
+    <div class="cal-cell">15</div>
+    <div class="cal-cell">16</div>
+    <div class="cal-cell">17</div>
+    <div class="cal-cell festival">18</div>
+    <!-- Row 4 -->
+    <div class="cal-cell sunday">19</div>
+    <div class="cal-cell">20</div>
+    <div class="cal-cell festival">21</div>
+    <div class="cal-cell">22</div>
+    <div class="cal-cell">23</div>
+    <div class="cal-cell">24</div>
+    <div class="cal-cell">25</div>
+    <!-- Row 5 -->
+    <div class="cal-cell sunday">26</div>
+    <div class="cal-cell">27</div>
+    <div class="cal-cell">28</div>
+    <div class="cal-cell">29</div>
+    <div class="cal-cell">30</div>
+    <div class="cal-cell empty"></div>
+    <div class="cal-cell empty"></div>
+  </div>
+
+  <!-- Legend -->
+  <div style="display:flex;gap:16px;margin-bottom:16px;font-size:.75rem;color:var(--text2)">
+    <span style="display:flex;align-items:center;gap:4px"><span style="width:8px;height:8px;border-radius:50%;background:var(--primary);display:inline-block"></span> &#x0B06;&#x0B1C;&#x0B3F; Today</span>
+    <span style="display:flex;align-items:center;gap:4px"><span style="width:8px;height:8px;border-radius:50%;background:var(--accent);display:inline-block"></span> &#x0B2A;&#x0B42;&#x0B1C;&#x0B3E; Puja</span>
+    <span style="display:flex;align-items:center;gap:4px"><span style="width:8px;height:8px;border-radius:50%;background:var(--holiday-red);display:inline-block"></span> &#x0B1B;&#x0B41;&#x0B1F;&#x0B3F; Holiday</span>
+  </div>
+
+  <!-- This Month's Festivals -->
+  <div class="section">
+    <div class="section-title"><span class="icon">&#x1FA94;</span> &#x0B0F;&#x0B39;&#x0B3F; &#x0B2E;&#x0B3E;&#x0B38;&#x0B30; &#x0B2A;&#x0B30;&#x0B4D;&#x0B2C; &middot; This Month</div>
+    <div class="card">
+      <div class="fest-list-item" onclick="showScreen('screen-detail')" style="cursor:pointer">
+        <div class="fest-dot puja">&#x1F31F;</div>
+        <div class="fest-info" style="flex:1">
+          <div class="or">&#x0B30;&#x0B3E;&#x0B2E; &#x0B28;&#x0B2C;&#x0B2E;&#x0B40;</div>
+          <div class="en">Ram Navami</div>
+        </div>
+        <div class="fest-date-badge">&#x0B6B; Apr</div>
+      </div>
+      <div class="fest-list-item" onclick="showScreen('screen-detail')" style="cursor:pointer">
+        <div class="fest-dot holiday">&#x1F534;</div>
+        <div class="fest-info" style="flex:1">
+          <div class="or">&#x0B2A;&#x0B23;&#x0B3E; &#x0B38;&#x0B19;&#x0B4D;&#x0B15;&#x0B4D;&#x0B30;&#x0B3E;&#x0B28;&#x0B4D;&#x0B24;&#x0B3F;</div>
+          <div class="en">Pana Sankranti / Odia New Year</div>
+        </div>
+        <div class="fest-date-badge">&#x0B67;&#x0B6A; Apr</div>
+      </div>
+      <div class="fest-list-item" onclick="showScreen('screen-detail')" style="cursor:pointer">
+        <div class="fest-dot puja">&#x1F31F;</div>
+        <div class="fest-info" style="flex:1">
+          <div class="or">&#x0B17;&#x0B41;&#x0B21;&#x0B4D; &#x0B2B;&#x0B4D;&#x0B30;&#x0B3E;&#x0B07;&#x0B21;&#x0B3C;&#x0B47;</div>
+          <div class="en">Good Friday</div>
+        </div>
+        <div class="fest-date-badge">&#x0B67;&#x0B6E; Apr</div>
+      </div>
+      <div class="fest-list-item" onclick="showScreen('screen-detail')" style="cursor:pointer">
+        <div class="fest-dot puja">&#x1F31F;</div>
+        <div class="fest-info" style="flex:1">
+          <div class="or">&#x0B39;&#x0B28;&#x0B41;&#x0B2E;&#x0B3E;&#x0B28; &#x0B1C;&#x0B5F;&#x0B28;&#x0B4D;&#x0B24;&#x0B40;</div>
+          <div class="en">Hanuman Jayanti</div>
+        </div>
+        <div class="fest-date-badge">&#x0B68;&#x0B67; Apr</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Odia Month Info -->
+  <div class="section">
+    <div class="section-title"><span class="icon">&#x1F4D6;</span> &#x0B13;&#x0B21;&#x0B3C;&#x0B3F;&#x0B06; &#x0B2E;&#x0B3E;&#x0B38; &middot; Odia Month</div>
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
+        <div style="width:50px;height:50px;border-radius:50%;background:linear-gradient(135deg,var(--primary),#F77F00);display:flex;align-items:center;justify-content:center;color:#fff;font-size:1.1rem;font-weight:700">&#x0B1A;&#x0B48;</div>
+        <div>
+          <div style="font-size:1.05rem;font-weight:700">&#x0B1A;&#x0B48;&#x0B24;&#x0B4D;&#x0B30; (Chaitra)</div>
+          <div style="font-size:.78rem;color:var(--text2)">March &ndash; April &middot; &#x0B2C;&#x0B38;&#x0B28;&#x0B4D;&#x0B24; (Spring)</div>
+        </div>
+      </div>
+      <div style="font-size:.85rem;line-height:1.6;color:var(--text)">
+        &#x0B0F;&#x0B39;&#x0B3E; &#x0B13;&#x0B21;&#x0B3C;&#x0B3F;&#x0B06; &#x0B2C;&#x0B30;&#x0B4D;&#x0B37;&#x0B30; &#x0B36;&#x0B47;&#x0B37; &#x0B2E;&#x0B3E;&#x0B38;&#x0E0D; &#x0B2A;&#x0B23;&#x0B3E; &#x0B38;&#x0B19;&#x0B4D;&#x0B15;&#x0B4D;&#x0B30;&#x0B3E;&#x0B28;&#x0B4D;&#x0B24;&#x0B3F;&#x0B30;&#x0B47; &#x0B28;&#x0B42;&#x0B06; &#x0B2C;&#x0B30;&#x0B4D;&#x0B37; &#x0B06;&#x0B30;&#x0B2E;&#x0B4D;&#x0B2D; &#x0B39;&#x0B41;&#x0B0F;&#x0964;
+      </div>
+      <div style="font-size:.75rem;color:var(--text2);margin-top:4px">
+        This is the last month of the Odia year. The new year begins with Pana Sankranti.
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SCREEN 3: WEATHER ==================== -->
+<div class="screen" id="screen-weather">
+
+  <!-- Weather Hero -->
+  <div class="weather-hero">
+    <div class="loc">&#x1F4CD; &#x0B2D;&#x0B41;&#x0B2C;&#x0B28;&#x0B47;&#x0B36;&#x0B4D;&#x0B71;&#x0B30;, &#x0B13;&#x0B21;&#x0B3C;&#x0B3F;&#x0B36;&#x0B3E; &nbsp;&middot;&nbsp; <span>[&#x0B2C;&#x0B26;&#x0B33;&#x0B3E;&#x0B28;&#x0B4D;&#x0B24;&#x0B41;]</span></div>
+    <div class="big-icon">&#9728;&#65039;</div>
+    <div class="big-temp">&#x0B69;&#x0B68;&#xB0;C</div>
+    <div class="feels">&#x0B05;&#x0B28;&#x0B41;&#x0B2D;&#x0B2C; &#x0B39;&#x0B47;&#x0B09;&#x0B1B;&#x0B3F;: &#x0B69;&#x0B6C;&#xB0;C &middot; Feels like: 36&#xB0;C</div>
+    <div class="conv">
+      &#x1F321;&#xFE0F; &#x0B17;&#x0B30;&#x0B2E; &#x0B32;&#x0B3E;&#x0B17;&#x0B41;&#x0B1B;&#x0B3F; &#x0B2D;&#x0B3E;&#x0B07;!<br>
+      &#x0B2C;&#x0B3E;&#x0B39;&#x0B3E;&#x0B30;&#x0B15;&#x0B41; &#x0B5F;&#x0B3F;&#x0B2C;&#x0B3E; &#x0B2C;&#x0B47;&#x0B33;&#x0B47; &#x0B1B;&#x0B24;&#x0B3E; &#x0B27;&#x0B30;&#x0B28;&#x0B4D;&#x0B24;&#x0B41;, &#x0B2A;&#x0B3E;&#x0B23;&#x0B3F; &#x0B2A;&#x0B3F;&#x0B05;&#x0B28;&#x0B4D;&#x0B24;&#x0B41;&#x0964;
+    </div>
+  </div>
+
+  <!-- Detail Grid -->
+  <div class="weather-detail-grid">
+    <div class="weather-detail-box">
+      <div class="icon">&#x1F4A8;</div>
+      <div class="val">12 km/h</div>
+      <div class="label-or">&#x0B2A;&#x0B2C;&#x0B28;</div>
+      <div class="label-en">Wind</div>
+    </div>
+    <div class="weather-detail-box">
+      <div class="icon">&#x1F4A7;</div>
+      <div class="val">45%</div>
+      <div class="label-or">&#x0B06;&#x0B30;&#x0B4D;&#x0B26;&#x0B4D;&#x0B30;&#x0B24;&#x0B3E;</div>
+      <div class="label-en">Humidity</div>
+    </div>
+    <div class="weather-detail-box">
+      <div class="icon">&#x1F327;&#xFE0F;</div>
+      <div class="val">10%</div>
+      <div class="label-or">&#x0B2C;&#x0B30;&#x0B4D;&#x0B37;&#x0B3E;</div>
+      <div class="label-en">Rain</div>
+    </div>
+    <div class="weather-detail-box">
+      <div class="icon">&#x1F441;&#xFE0F;</div>
+      <div class="val">6 km</div>
+      <div class="label-or">&#x0B26;&#x0B43;&#x0B36;&#x0B4D;&#x0B5F;&#x0B24;&#x0B3E;</div>
+      <div class="label-en">Visibility</div>
+    </div>
+  </div>
+
+  <!-- Hourly -->
+  <div class="section">
+    <div class="section-title"><span class="icon">&#x1F553;</span> &#x0B06;&#x0B1C;&#x0B3F; &#x0B26;&#x0B3F;&#x0B28;&#x0B38;&#x0B3E;&#x0B30;&#x0B3E; &middot; Throughout Today</div>
+    <div class="card">
+      <div class="hourly-row">
+        <div class="hourly-time">&#x1F305; &#x0B38;&#x0B15;&#x0B3E;&#x0B33;</div>
+        <div class="hourly-icon">&#9728;&#65039;</div>
+        <div class="hourly-temp">26&#xB0;C</div>
+        <div class="hourly-desc">&#x0B16;&#x0B30;&#x0B3E; &middot; Sunny</div>
+      </div>
+      <div class="hourly-row">
+        <div class="hourly-time">&#x1F31E; &#x0B26;&#x0B41;&#x0B2A;&#x0B39;&#x0B30;</div>
+        <div class="hourly-icon">&#9728;&#65039;</div>
+        <div class="hourly-temp">35&#xB0;C</div>
+        <div class="hourly-desc">&#x0B17;&#x0B30;&#x0B2E; &middot; Hot</div>
+      </div>
+      <div class="hourly-row">
+        <div class="hourly-time">&#x1F306; &#x0B38;&#x0B28;&#x0B4D;&#x0B27;&#x0B4D;&#x0B5F;&#x0B3E;</div>
+        <div class="hourly-icon">&#x1F324;&#xFE0F;</div>
+        <div class="hourly-temp">29&#xB0;C</div>
+        <div class="hourly-desc">&#x0B1F;&#x0B3F;&#x0B15;&#x0B47; &#x0B25;&#x0B23;&#x0B4D;&#x0B21;&#x0B3E; &middot; Cooler</div>
+      </div>
+      <div class="hourly-row">
+        <div class="hourly-time">&#x1F319; &#x0B30;&#x0B3E;&#x0B24;&#x0B3F;</div>
+        <div class="hourly-icon">&#x1F319;</div>
+        <div class="hourly-temp">24&#xB0;C</div>
+        <div class="hourly-desc">&#x0B06;&#x0B30;&#x0B3E;&#x0B2E; &middot; Pleasant</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 7 Day Forecast -->
+  <div class="section">
+    <div class="section-title"><span class="icon">&#x1F4C5;</span> &#x0B6D; &#x0B26;&#x0B3F;&#x0B28;&#x0B30; &#x0B2A;&#x0B3E;&#x0B23;&#x0B3F;&#x0B2A;&#x0B3E;&#x0B17; &middot; 7-Day Forecast</div>
+    <div class="card">
+      <div class="forecast-row">
+        <div class="forecast-day">&#x0B36;&#x0B41;</div>
+        <div class="forecast-icon">&#9728;&#65039;</div>
+        <div class="forecast-temps"><span class="hi">32&#xB0;</span> / <span class="lo">24&#xB0;</span></div>
+        <div class="forecast-desc-or">&#x0B17;&#x0B30;&#x0B2E;</div>
+      </div>
+      <div class="forecast-row">
+        <div class="forecast-day">&#x0B36;</div>
+        <div class="forecast-icon">&#x26C5;</div>
+        <div class="forecast-temps"><span class="hi">30&#xB0;</span> / <span class="lo">23&#xB0;</span></div>
+        <div class="forecast-desc-or">&#x0B2E;&#x0B47;&#x0B18;&#x0B41;&#x0B06;</div>
+      </div>
+      <div class="forecast-row">
+        <div class="forecast-day">&#x0B30;</div>
+        <div class="forecast-icon">&#x1F327;&#xFE0F;</div>
+        <div class="forecast-temps"><span class="hi">28&#xB0;</span> / <span class="lo">22&#xB0;</span></div>
+        <div class="forecast-desc-or" style="color:var(--weather-blue);font-weight:700">&#x0B2C;&#x0B30;&#x0B4D;&#x0B37;&#x0B3E;!</div>
+      </div>
+      <div class="forecast-row">
+        <div class="forecast-day">&#x0B38;&#x0B4B;</div>
+        <div class="forecast-icon">&#x1F327;&#xFE0F;</div>
+        <div class="forecast-temps"><span class="hi">27&#xB0;</span> / <span class="lo">21&#xB0;</span></div>
+        <div class="forecast-desc-or">&#x0B2C;&#x0B30;&#x0B4D;&#x0B37;&#x0B3E;</div>
+      </div>
+      <div class="forecast-row">
+        <div class="forecast-day">&#x0B2E;</div>
+        <div class="forecast-icon">&#x26C5;</div>
+        <div class="forecast-temps"><span class="hi">29&#xB0;</span> / <span class="lo">22&#xB0;</span></div>
+        <div class="forecast-desc-or">&#x0B2E;&#x0B47;&#x0B18;&#x0B41;&#x0B06;</div>
+      </div>
+      <div class="forecast-row">
+        <div class="forecast-day">&#x0B2C;&#x0B41;</div>
+        <div class="forecast-icon">&#9728;&#65039;</div>
+        <div class="forecast-temps"><span class="hi">31&#xB0;</span> / <span class="lo">23&#xB0;</span></div>
+        <div class="forecast-desc-or">&#x0B16;&#x0B30;&#x0B3E;</div>
+      </div>
+      <div class="forecast-row">
+        <div class="forecast-day">&#x0B17;&#x0B41;</div>
+        <div class="forecast-icon">&#9728;&#65039;</div>
+        <div class="forecast-temps"><span class="hi">33&#xB0;</span> / <span class="lo">25&#xB0;</span></div>
+        <div class="forecast-desc-or">&#x0B17;&#x0B30;&#x0B2E;</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Agricultural Weather -->
+  <div class="section">
+    <div class="agri-card">
+      <div class="title">&#x1F33E; &#x0B15;&#x0B43;&#x0B37;&#x0B3F; &#x0B2A;&#x0B3E;&#x0B23;&#x0B3F;&#x0B2A;&#x0B3E;&#x0B17; &middot; Farm Weather</div>
+      <div class="agri-tip">
+        <div class="icon">&#x1F331;</div>
+        <div>
+          <strong>&#x0B06;&#x0B38;&#x0B28;&#x0B4D;&#x0B24;&#x0B3E; &#x0B69; &#x0B26;&#x0B3F;&#x0B28;&#x0B30;&#x0B47; &#x0B2C;&#x0B30;&#x0B4D;&#x0B37;&#x0B3E; &#x0B38;&#x0B2E;&#x0B4D;&#x0B2D;&#x0B3E;&#x0B2C;&#x0B28;&#x0B3E;</strong><br>
+          <span style="opacity:.85;font-size:.82rem">Rain likely in 3 days &mdash; good time for paddy sowing</span>
+        </div>
+      </div>
+      <div class="agri-tip">
+        <div class="icon">&#x1F41B;</div>
+        <div>
+          <strong>&#x0B05;&#x0B27;&#x0B3F;&#x0B15; &#x0B06;&#x0B30;&#x0B4D;&#x0B26;&#x0B4D;&#x0B30;&#x0B24;&#x0B3E; &mdash; &#x0B2B;&#x0B38;&#x0B32;&#x0B30;&#x0B47; &#x0B2A;&#x0B4B;&#x0B15; &#x0B27;&#x0B4D;&#x0B5F;&#x0B3E;&#x0B28; &#x0B26;&#x0B3F;&#x0B05;&#x0B28;&#x0B4D;&#x0B24;&#x0B41;</strong><br>
+          <span style="opacity:.85;font-size:.82rem">High humidity &mdash; watch for crop pests</span>
+        </div>
+      </div>
+      <div class="agri-tip">
+        <div class="icon">&#x1F4A7;</div>
+        <div>
+          <strong>&#x0B2A;&#x0B3E;&#x0B23;&#x0B3F; &#x0B26;&#x0B47;&#x0B2C;&#x0B3E; &#x0B15;&#x0B2E;&#x0B3E;&#x0B07;&#x0B2C;&#x0B3E; &#x0B28;&#x0B3E;&#x0B39;&#x0B3F;&#x0B01;</strong><br>
+          <span style="opacity:.85;font-size:.82rem">Don't reduce watering yet &mdash; soil is still dry</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== SCREEN 4: HOLIDAYS ==================== -->
+<div class="screen" id="screen-holidays">
+
+  <!-- Tabs -->
+  <div class="tab-bar">
+    <div class="tab-btn active" onclick="setTab(this)">&#x1F3E6; &#x0B2C;&#x0B4D;&#x0B5F;&#x0B3E;&#x0B19;&#x0B4D;&#x0B15; Bank</div>
+    <div class="tab-btn" onclick="setTab(this)">&#x1F3DB;&#xFE0F; &#x0B38;&#x0B30;&#x0B15;&#x0B3E;&#x0B30;&#x0B40; Govt</div>
+  </div>
+
+  <!-- Filter -->
+  <div class="filter-row">
+    <div class="filter-chip active">&#x0B38;&#x0B2E;&#x0B38;&#x0B4D;&#x0B24; All</div>
+    <div class="filter-chip" onclick="toggleChip(this)">&#x0B0F;&#x0B2A;&#x0B4D;&#x0B30;&#x0B3F;&#x0B32; Apr</div>
+    <div class="filter-chip" onclick="toggleChip(this)">&#x0B2E;&#x0B47; May</div>
+    <div class="filter-chip" onclick="toggleChip(this)">&#x0B1C;&#x0B41;&#x0B28; Jun</div>
+    <div class="filter-chip" onclick="toggleChip(this)">&#x0B1C;&#x0B41;&#x0B32;&#x0B3E;&#x0B07; Jul</div>
+  </div>
+
+  <!-- April -->
+  <div class="month-group-title">&#x0B0F;&#x0B2A;&#x0B4D;&#x0B30;&#x0B3F;&#x0B32; &#x0B68;&#x0B66;&#x0B68;&#x0B6C; &middot; April 2026</div>
+
+  <div class="hol-item">
+    <div class="hol-marker both"></div>
+    <div class="hol-body">
+      <div class="date-line">&#x0B67;&#x0B6A; &#x0B0F;&#x0B2A;&#x0B4D;&#x0B30;&#x0B3F;&#x0B32; (&#x0B2E;&#x0B19;&#x0B4D;&#x0B17;&#x0B33;) &middot; 14 Apr (Tue)</div>
+      <div class="or">&#x0B21;&#x0B3C;&#x0B03; &#x0B06;&#x0B2E;&#x0B4D;&#x0B2C;&#x0B47;&#x0B26;&#x0B15;&#x0B30; &#x0B1C;&#x0B5F;&#x0B28;&#x0B4D;&#x0B24;&#x0B40;</div>
+      <div class="en">Dr. Ambedkar Jayanti</div>
+      <div class="hol-badges">
+        <span class="hol-badge bank">&#x1F3E6; Bank</span>
+        <span class="hol-badge govt">&#x1F3DB;&#xFE0F; Govt</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="hol-item">
+    <div class="hol-marker govt"></div>
+    <div class="hol-body">
+      <div class="date-line">&#x0B67;&#x0B6A; &#x0B0F;&#x0B2A;&#x0B4D;&#x0B30;&#x0B3F;&#x0B32; (&#x0B2E;&#x0B19;&#x0B4D;&#x0B17;&#x0B33;) &middot; 14 Apr (Tue)</div>
+      <div class="or">&#x0B2A;&#x0B23;&#x0B3E; &#x0B38;&#x0B19;&#x0B4D;&#x0B15;&#x0B4D;&#x0B30;&#x0B3E;&#x0B28;&#x0B4D;&#x0B24;&#x0B3F; / &#x0B13;&#x0B21;&#x0B3C;&#x0B3F;&#x0B06; &#x0B28;&#x0B42;&#x0B06;&#x0B2C;&#x0B30;&#x0B4D;&#x0B37;</div>
+      <div class="en">Pana Sankranti / Odia New Year</div>
+      <div class="hol-badges">
+        <span class="hol-badge govt">&#x1F3DB;&#xFE0F; Govt</span>
+        <span class="hol-badge state">&#x0B13;&#x0B21;&#x0B3C;&#x0B3F;&#x0B36;&#x0B3E; Odisha</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="hol-item">
+    <div class="hol-marker bank"></div>
+    <div class="hol-body">
+      <div class="date-line">&#x0B67;&#x0B6E; &#x0B0F;&#x0B2A;&#x0B4D;&#x0B30;&#x0B3F;&#x0B32; (&#x0B36;&#x0B28;&#x0B3F;) &middot; 18 Apr (Sat)</div>
+      <div class="or">&#x0B17;&#x0B41;&#x0B21;&#x0B4D; &#x0B2B;&#x0B4D;&#x0B30;&#x0B3E;&#x0B07;&#x0B21;&#x0B3C;&#x0B47;</div>
+      <div class="en">Good Friday</div>
+      <div class="hol-badges">
+        <span class="hol-badge bank">&#x1F3E6; Bank</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- May -->
+  <div class="month-group-title">&#x0B2E;&#x0B47; &#x0B68;&#x0B66;&#x0B68;&#x0B6C; &middot; May 2026</div>
+
+  <div class="hol-item">
+    <div class="hol-marker both"></div>
+    <div class="hol-body">
+      <div class="date-line">&#x0B67; &#x0B2E;&#x0B47; (&#x0B36;&#x0B41;&#x0B15;&#x0B4D;&#x0B30;) &middot; 1 May (Fri)</div>
+      <div class="or">&#x0B2E;&#x0B47; &#x0B26;&#x0B3F;&#x0B2C;&#x0B38; / &#x0B36;&#x0B4D;&#x0B30;&#x0B2E;&#x0B3F;&#x0B15; &#x0B26;&#x0B3F;&#x0B2C;&#x0B38;</div>
+      <div class="en">May Day / Labour Day</div>
+      <div class="hol-badges">
+        <span class="hol-badge bank">&#x1F3E6; Bank</span>
+        <span class="hol-badge govt">&#x1F3DB;&#xFE0F; Govt</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="hol-item">
+    <div class="hol-marker both"></div>
+    <div class="hol-body">
+      <div class="date-line">&#x0B68;&#x0B6C; &#x0B2E;&#x0B47; (&#x0B2E;&#x0B19;&#x0B4D;&#x0B17;&#x0B33;) &middot; 26 May (Tue)</div>
+      <div class="or">&#x0B2C;&#x0B41;&#x0B26;&#x0B4D;&#x0B27; &#x0B2A;&#x0B42;&#x0B30;&#x0B4D;&#x0B23;&#x0B4D;&#x0B23;&#x0B3F;&#x0B2E;&#x0B3E;</div>
+      <div class="en">Buddha Purnima</div>
+      <div class="hol-badges">
+        <span class="hol-badge bank">&#x1F3E6; Bank</span>
+        <span class="hol-badge govt">&#x1F3DB;&#xFE0F; Govt</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- June -->
+  <div class="month-group-title">&#x0B1C;&#x0B41;&#x0B28; &#x0B68;&#x0B66;&#x0B68;&#x0B6C; &middot; June 2026</div>
+
+  <div class="hol-item">
+    <div class="hol-marker both"></div>
+    <div class="hol-body">
+      <div class="date-line">&#x0B68;&#x0B66; &#x0B1C;&#x0B41;&#x0B28; (&#x0B36;&#x0B28;&#x0B3F;) &middot; 20 Jun (Sat)</div>
+      <div class="or">&#x0B30;&#x0B25; &#x0B5F;&#x0B3E;&#x0B24;&#x0B4D;&#x0B30;&#x0B3E;</div>
+      <div class="en">Rath Yatra</div>
+      <div class="hol-badges">
+        <span class="hol-badge bank">&#x1F3E6; Bank</span>
+        <span class="hol-badge govt">&#x1F3DB;&#xFE0F; Govt</span>
+        <span class="hol-badge state">&#x0B13;&#x0B21;&#x0B3C;&#x0B3F;&#x0B36;&#x0B3E; Odisha</span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ==================== SCREEN 5: FESTIVAL DETAIL ==================== -->
+<div class="screen" id="screen-detail">
+
+  <div class="detail-hero">
+    <div class="art">&#x1F6D5;</div>
+    <div class="name-or">&#x0B2A;&#x0B23;&#x0B3E; &#x0B38;&#x0B19;&#x0B4D;&#x0B15;&#x0B4D;&#x0B30;&#x0B3E;&#x0B28;&#x0B4D;&#x0B24;&#x0B3F;</div>
+    <div class="name-en">Pana Sankranti / Odia New Year</div>
+    <div class="date-line">&#x0B67;&#x0B6A; &#x0B0F;&#x0B2A;&#x0B4D;&#x0B30;&#x0B3F;&#x0B32; &#x0B68;&#x0B66;&#x0B68;&#x0B6C; (&#x0B2E;&#x0B19;&#x0B4D;&#x0B17;&#x0B33;&#x0B2C;&#x0B3E;&#x0B30;) &middot; 14 April 2026 (Tuesday)</div>
+    <div class="tithi">&#x0B67; &#x0B2C;&#x0B48;&#x0B36;&#x0B3E;&#x0B16; &#x0B67;&#x0B6F;&#x0B6A;&#x0B6D; &middot; &#x0B2E;&#x0B47;&#x0B37; &#x0B38;&#x0B19;&#x0B4D;&#x0B15;&#x0B4D;&#x0B30;&#x0B3E;&#x0B28;&#x0B4D;&#x0B24;&#x0B3F;</div>
+  </div>
+
+  <!-- Significance -->
+  <div class="detail-section">
+    <div class="title">&#x1F4D6; &#x0B2E;&#x0B39;&#x0B24;&#x0B4D;&#x0B24;&#x0B4D;&#x0B71; (Significance)</div>
+    <div class="card">
+      <div class="detail-text">
+        &#x0B0F;&#x0B39;&#x0B3E; &#x0B13;&#x0B21;&#x0B3C;&#x0B3F;&#x0B06; &#x0B28;&#x0B42;&#x0B06; &#x0B2C;&#x0B30;&#x0B4D;&#x0B37;&#x0964; &#x0B0F;&#x0B39;&#x0B3F; &#x0B26;&#x0B3F;&#x0B28; &#x0B2A;&#x0B23;&#x0B3E; (&#x0B0F;&#x0B15; &#x0B2C;&#x0B3F;&#x0B36;&#x0B47;&#x0B37; &#x0B2A;&#x0B3E;&#x0B28;&#x0B40;&#x0B5F;) &#x0B2A;&#x0B4D;&#x0B30;&#x0B38;&#x0B4D;&#x0B24;&#x0B41;&#x0B24; &#x0B15;&#x0B30;&#x0B3F; &#x0B1C;&#x0B17;&#x0B28;&#x0B4D;&#x0B28;&#x0B3E;&#x0B25;&#x0B19;&#x0B4D;&#x0B15;&#x0B41; &#x0B05;&#x0B30;&#x0B4D;&#x0B2A;&#x0B23; &#x0B15;&#x0B30;&#x0B3E;&#x0B5F;&#x0B3E;&#x0B0F;&#x0964; &#x0B18;&#x0B30;&#x0B47; &#x0B18;&#x0B30;&#x0B47; &#x0B2A;&#x0B23;&#x0B3E; &#x0B24;&#x0B3F;&#x0B06;&#x0B30;&#x0B3F; &#x0B39;&#x0B41;&#x0B0F;&#x0964; &#x0B0F;&#x0B39;&#x0B3E; &#x0B2E;&#x0B39;&#x0B3E; &#x0B2C;&#x0B3F;&#x0B37;&#x0B41;&#x0B2C; &#x0B38;&#x0B19;&#x0B4D;&#x0B15;&#x0B4D;&#x0B30;&#x0B3E;&#x0B28;&#x0B4D;&#x0B24;&#x0B3F; &#x0B2E;&#x0B27;&#x0B4D;&#x0B5F; &#x0B2A;&#x0B3E;&#x0B33;&#x0B3F;&#x0B24; &#x0B39;&#x0B41;&#x0B0F;&#x0964;
+      </div>
+      <div class="detail-text en">
+        This is Odia New Year. Pana (a special drink made from bael fruit, raw mango, cheese and spices) is prepared and offered to Lord Jagannath. Every household makes Pana on this day. It is celebrated as Maha Vishuba Sankranti.
+      </div>
+    </div>
+  </div>
+
+  <!-- Traditions -->
+  <div class="detail-section">
+    <div class="title">&#x1F3AD; &#x0B2A;&#x0B30;&#x0B2E;&#x0B4D;&#x0B2A;&#x0B30;&#x0B3E; (Traditions)</div>
+    <div class="card">
+      <ul class="tradition-list">
+        <li><span>&#x1F964;</span> &#x0B2A;&#x0B23;&#x0B3E; &#x0B24;&#x0B3F;&#x0B06;&#x0B30;&#x0B3F; &#x0B13; &#x0B2C;&#x0B3F;&#x0B24;&#x0B30;&#x0B23; &middot; Pana preparation &amp; distribution</li>
+        <li><span>&#x1F6D5;</span> &#x0B1C;&#x0B17;&#x0B28;&#x0B4D;&#x0B28;&#x0B3E;&#x0B25; &#x0B2E;&#x0B28;&#x0B4D;&#x0B26;&#x0B3F;&#x0B30;&#x0B30;&#x0B47; &#x0B2A;&#x0B42;&#x0B1C;&#x0B3E; &middot; Worship at Jagannath temple</li>
+        <li><span>&#x1F3E0;</span> &#x0B18;&#x0B30; &#x0B38;&#x0B1C;&#x0B3E;&#x0B07;&#x0B2C;&#x0B3E; &#x0B13; &#x0B30;&#x0B19;&#x0B4D;&#x0B17;&#x0B4B;&#x0B33;&#x0B3F; &middot; House cleaning &amp; rangoli</li>
+        <li><span>&#x1F52E;</span> &#x0B28;&#x0B42;&#x0B06; &#x0B2C;&#x0B30;&#x0B4D;&#x0B37; &#x0B2A;&#x0B1E;&#x0B4D;&#x0B1C;&#x0B3F;&#x0B15;&#x0B3E; &#x0B26;&#x0B47;&#x0B16;&#x0B3F;&#x0B2C;&#x0B3E; &middot; Reading new year Panchang</li>
+        <li><span>&#x1F37D;&#xFE0F;</span> &#x0B2C;&#x0B3F;&#x0B36;&#x0B47;&#x0B37; &#x0B16;&#x0B3E;&#x0B26;&#x0B4D;&#x0B5F; &#x0B2A;&#x0B4D;&#x0B30;&#x0B38;&#x0B4D;&#x0B24;&#x0B41;&#x0B24;&#x0B3F; &middot; Special feast preparation</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- At a Glance -->
+  <div class="detail-section">
+    <div class="title">&#x1F440; &#x0B17;&#x0B4B;&#x0B1F;&#x0B3F;&#x0B0F; &#x0B28;&#x0B1C;&#x0B30;&#x0B30;&#x0B47; (At a Glance)</div>
+    <div class="glance-grid">
+      <div class="glance-box">
+        <div class="icon">&#x1F3E6;</div>
+        <div class="label">&#x0B2C;&#x0B4D;&#x0B5F;&#x0B3E;&#x0B19;&#x0B4D;&#x0B15; &#x0B1B;&#x0B41;&#x0B1F;&#x0B3F;</div>
+        <div class="val" style="color:var(--green)">&#x0B39;&#x0B01; Yes</div>
+      </div>
+      <div class="glance-box">
+        <div class="icon">&#x1F3DB;&#xFE0F;</div>
+        <div class="label">&#x0B38;&#x0B30;&#x0B15;&#x0B3E;&#x0B30;&#x0B40; &#x0B1B;&#x0B41;&#x0B1F;&#x0B3F;</div>
+        <div class="val" style="color:var(--green)">&#x0B39;&#x0B01; Yes</div>
+      </div>
+      <div class="glance-box">
+        <div class="icon">&#x1F4CD;</div>
+        <div class="label">&#x0B2A;&#x0B4D;&#x0B30;&#x0B27;&#x0B3E;&#x0B28; &#x0B38;&#x0B4D;&#x0B25;&#x0B3E;&#x0B28;</div>
+        <div class="val">&#x0B38;&#x0B2E;&#x0B38;&#x0B4D;&#x0B24; &#x0B13;&#x0B21;&#x0B3C;&#x0B3F;&#x0B36;&#x0B3E;</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reminder Button -->
+  <button class="reminder-btn" onclick="alert('&#x0B30;&#x0B3F;&#x0B2E;&#x0B3E;&#x0B07;&#x0B23;&#x0B4D;&#x0B21;&#x0B30; &#x0B38;&#x0B47;&#x0B1F; &#x0B39;&#x0B47;&#x0B32;&#x0B3E;! Reminder set!')">
+    &#x1F514; &#x0B30;&#x0B3F;&#x0B2E;&#x0B3E;&#x0B07;&#x0B23;&#x0B4D;&#x0B21;&#x0B30; &#x0B38;&#x0B47;&#x0B1F; &#x0B15;&#x0B30;&#x0B28;&#x0B4D;&#x0B24;&#x0B41; &middot; Set Reminder
+  </button>
+
+</div>
+
+<!-- ==================== BOTTOM NAV ==================== -->
+<div class="bottom-nav">
+  <div class="nav-item active" onclick="showScreen('screen-home')">
+    <span class="icon">&#x1F3E0;</span>
+    <span class="label-or">&#x0B18;&#x0B30;</span>
+    <span class="label-en">Home</span>
+  </div>
+  <div class="nav-item" onclick="showScreen('screen-calendar')">
+    <span class="icon">&#x1F4C5;</span>
+    <span class="label-or">&#x0B2A;&#x0B1E;&#x0B4D;&#x0B1C;&#x0B3F;&#x0B15;&#x0B3E;</span>
+    <span class="label-en">Calendar</span>
+  </div>
+  <div class="nav-item" onclick="showScreen('screen-weather')">
+    <span class="icon">&#x1F324;&#xFE0F;</span>
+    <span class="label-or">&#x0B2A;&#x0B3E;&#x0B23;&#x0B3F;&#x0B2A;&#x0B3E;&#x0B17;</span>
+    <span class="label-en">Weather</span>
+  </div>
+  <div class="nav-item" onclick="showScreen('screen-holidays')">
+    <span class="icon">&#x1F3DB;&#xFE0F;</span>
+    <span class="label-or">&#x0B1B;&#x0B41;&#x0B1F;&#x0B3F;</span>
+    <span class="label-en">Holiday</span>
+  </div>
+</div>
+
+<script>
+var hist=["screen-home"];
+function showScreen(id){
+  document.querySelectorAll(".screen").forEach(function(s){s.classList.remove("active")});
+  document.getElementById(id).classList.add("active");
+  // nav
+  var tabs=["screen-home","screen-calendar","screen-weather","screen-holidays"];
+  var navItems=document.querySelectorAll(".nav-item");
+  navItems.forEach(function(n,i){n.classList.toggle("active",tabs[i]===id)});
+  // back
+  var bb=document.getElementById("backBtn");
+  if(id==="screen-detail"){bb.style.display="inline";hist.push(id)}
+  else{bb.style.display="none";hist=["screen-home"]}
+  window.scrollTo(0,0);
+}
+function goBack(){
+  hist.pop();
+  var prev=hist.length?hist[hist.length-1]:"screen-home";
+  showScreen(prev);
+}
+function setTab(el){
+  el.parentNode.querySelectorAll(".tab-btn").forEach(function(t){t.classList.remove("active")});
+  el.classList.add("active");
+}
+function toggleChip(el){
+  el.parentNode.querySelectorAll(".filter-chip").forEach(function(c){c.classList.remove("active")});
+  el.classList.add("active");
+}
+</script>
+</body>
+</html>
